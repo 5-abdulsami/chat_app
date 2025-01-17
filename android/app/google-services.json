@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "12566835162",
+    "project_id": "olx-app-33717",
+    "storage_bucket": "olx-app-33717.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12566835162:android:ebb69eb52cb4eaa0d31ae3",
+        "android_client_info": {
+          "package_name": "com.example.olx_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8Vyf9RKe03jduZzU7XMZrgb8LfgYatqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12566835162:android:113916775902a6ebd31ae3",
+        "android_client_info": {
+          "package_name": "com.samionyx.chat_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8Vyf9RKe03jduZzU7XMZrgb8LfgYatqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

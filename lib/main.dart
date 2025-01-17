@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:linkup/auth/login_screen.dart';
 import 'package:linkup/utils/colors.dart';
 import 'package:linkup/view/home_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +30,7 @@ class MyApp extends StatelessWidget {
             titleTextStyle:
                 GoogleFonts.poppins(color: blackColor, fontSize: 19)),
       ),
-      home: const HomeScreen(),
+      home: const LoginScreen(),
     );
   }
 }
