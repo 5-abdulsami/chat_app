@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/auth/login_screen.dart';
 import 'package:linkup/utils/colors.dart';
@@ -19,6 +20,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // for only portrait full screen view
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'LinkUp - Chat App',
