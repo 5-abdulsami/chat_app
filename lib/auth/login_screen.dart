@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:linkup/auth/auth_service.dart';
 import 'package:linkup/main.dart';
 import 'package:linkup/utils/colors.dart';
 
@@ -12,10 +14,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  AuthService authService = AuthService();
   bool _isAnimate = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {
@@ -45,18 +47,29 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Image.asset('assets/images/icon.png')),
           Positioned(
               bottom: mediaQuery.height * 0.15,
-              left: mediaQuery.width * 0.5,
-              width: mediaQuery.width * 0.9,
+              left: mediaQuery.width * 0.05,
+              width: mediaQuery.width * 0.85,
               height: mediaQuery.height * 0.07,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: greenColor, shape: const StadiumBorder()),
                 onPressed: () {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (_) => const HomeScreen()));
+                  authService.signInWithGoogle().then((user) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()));
+                  });
                 },
-                icon: Image.asset('assets/images/google.png'),
-                label: const Text("Login with Google"),
+                icon: Image.asset(
+                  'assets/images/google.png',
+                  height: mediaQuery.height * 0.05,
+                ),
+                label: Text(
+                  "Login with Google",
+                  style: GoogleFonts.poppins(
+                      color: whiteColor, fontSize: mediaQuery.width * 0.04),
+                ),
               )),
         ],
       ),

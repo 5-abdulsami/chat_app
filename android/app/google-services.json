@@ -1,45 +1,37 @@
 {
   "project_info": {
-    "project_number": "12566835162",
-    "project_id": "olx-app-33717",
-    "storage_bucket": "olx-app-33717.appspot.com"
+    "project_number": "756867061198",
+    "firebase_url": "https://tiers-22911-default-rtdb.firebaseio.com",
+    "project_id": "tiers-22911",
+    "storage_bucket": "tiers-22911.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:12566835162:android:ebb69eb52cb4eaa0d31ae3",
-        "android_client_info": {
-          "package_name": "com.example.olx_app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyD8Vyf9RKe03jduZzU7XMZrgb8LfgYatqY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:12566835162:android:113916775902a6ebd31ae3",
+        "mobilesdk_app_id": "1:756867061198:android:036727053a4956b309479f",
         "android_client_info": {
           "package_name": "com.samionyx.chat_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "756867061198-652tp7857pu9g8gp8pbbsflu21su3k4f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyD8Vyf9RKe03jduZzU7XMZrgb8LfgYatqY"
+          "current_key": "AIzaSyBzAvT_eCUR6IahVMk5N5icSCZMYNOQxeE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756867061198-652tp7857pu9g8gp8pbbsflu21su3k4f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
