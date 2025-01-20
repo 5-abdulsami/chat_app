@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/auth/auth_service.dart';
@@ -14,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  AuthService authService = AuthService();
+  final AuthService _authService = AuthService();
   bool _isAnimate = false;
   @override
   void initState() {
@@ -53,13 +55,29 @@ class _LoginScreenState extends State<LoginScreen> {
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: greenColor, shape: const StadiumBorder()),
-                onPressed: () {
-                  authService.signInWithGoogle().then((user) {
+                onPressed: () async {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => const Center(
+                      child: CircularProgressIndicator(
+                        color: whiteColor,
+                      ),
+                    ),
+                  );
+
+                  final user = await _authService.signInWithGoogle();
+                  Navigator.pop(context); // Close the progress dialog
+
+                  if (user != null) {
+                    log('Signed in as: ${user.displayName}');
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const HomeScreen()));
-                  });
+                  } else {
+                    log('-----Google Sign-In failed');
+                  }
                 },
                 icon: Image.asset(
                   'assets/images/google.png',
