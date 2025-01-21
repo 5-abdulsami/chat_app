@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:linkup/auth/auth_service.dart';
 import 'package:linkup/auth/login_screen.dart';
 import 'package:linkup/view/home_screen.dart';
 
@@ -12,6 +12,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final AuthService _authService = AuthService();
   @override
   void initState() {
     super.initState();
@@ -22,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
         statusBarColor: Colors.transparent,
       ));
 
-      if (FirebaseAuth.instance.currentUser != null) {
+      if (_authService.auth.currentUser != null) {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const HomeScreen()));
       } else {
