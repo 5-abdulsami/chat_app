@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/main.dart';
+import 'package:linkup/model/chat_user.dart';
 
 class ChatUserCard extends StatefulWidget {
-  const ChatUserCard({super.key});
+  final ChatUser user;
+  const ChatUserCard({super.key, required this.user});
 
   @override
   State<ChatUserCard> createState() => _ChatUserCardState();
@@ -24,9 +26,9 @@ class _ChatUserCardState extends State<ChatUserCard> {
               leading: CircleAvatar(
                 child: Icon(Icons.check),
               ),
-              title: Text("User Name"),
+              title: Text(widget.user.name, style: GoogleFonts.poppins()),
               subtitle: Text(
-                " ",
+                widget.user.about,
                 style: GoogleFonts.poppins(),
                 maxLines: 1,
               ),

@@ -6,7 +6,7 @@ import 'package:linkup/auth/auth_service.dart';
 import 'package:linkup/main.dart';
 import 'package:linkup/utils/colors.dart';
 
-import '../view/home_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Image.asset('assets/images/icon.png')),
           Positioned(
               bottom: mediaQuery.height * 0.15,
-              left: mediaQuery.width * 0.05,
+              left: mediaQuery.width * 0.065,
               width: mediaQuery.width * 0.85,
               height: mediaQuery.height * 0.07,
               child: ElevatedButton.icon(

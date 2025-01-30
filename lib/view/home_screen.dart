@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/api/api.dart';
 import 'package:linkup/main.dart';
+import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/widgets.dart/chat_user_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<ChatUser> list = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,21 +31,32 @@ class _HomeScreenState extends State<HomeScreen> {
       body: StreamBuilder(
           stream: API.firestore.collection('users').snapshots(),
           builder: (context, snapshot) {
-            var list = [];
-            if (snapshot.hasData) {
-              final data = snapshot.data?.docs;
-              for (var i in data!) {
-                log('Data: ${i.data()}');
-                list.add(i.data()['name']);
-              }
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+              case ConnectionState.none:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+
+              case ConnectionState.active:
+              case ConnectionState.done:
+                var list = [];
+                final data = snapshot.data?.docs;
+                list = data!.map((e) => ChatUser.fromJson(e.data())).toList();
+
+                if (list.isNotEmpty) {
+                  return ListView.builder(
+                      padding: EdgeInsets.only(top: mediaQuery.height * 0.01),
+                      itemCount: list.length,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return ChatUserCard(user: list[index]);
+                      });
+                } else {
+                  return Text("No connections found!",
+                      style: GoogleFonts.poppins());
+                }
             }
-            return ListView.builder(
-                padding: EdgeInsets.only(top: mediaQuery.height * 0.01),
-                itemCount: list.length,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Text(list[index]);
-                });
           }),
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(10),
