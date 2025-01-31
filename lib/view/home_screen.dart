@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:linkup/api/api.dart';
+import 'package:linkup/auth/auth_service.dart';
 import 'package:linkup/main.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/widgets.dart/chat_user_card.dart';
@@ -61,7 +63,9 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(10),
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () async {
+            await AuthService().signOut();
+          },
           child: const Icon(Icons.add_comment_rounded),
         ),
       ),

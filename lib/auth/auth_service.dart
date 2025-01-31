@@ -36,6 +36,7 @@ class AuthService {
           await _auth.signInWithCredential(credential);
 
       // once signed in, returned the user credential
+      log('User Data: ${userCredential.user}');
       return userCredential.user;
     } on FirebaseAuthException catch (e) {
       log('-----FirebaseAuthException: ${e.code} - ${e.message}');

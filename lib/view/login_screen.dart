@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:linkup/api/api.dart';
 import 'package:linkup/auth/auth_service.dart';
 import 'package:linkup/main.dart';
 import 'package:linkup/utils/colors.dart';
@@ -71,10 +72,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   if (user != null) {
                     log('Signed in as: ${user.displayName}');
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()));
+                    if (await API.userExists()) {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen()));
+                    } else {
+                      await API.createUser().then((value) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ));
+                      });
+                    }
                   } else {
                     log('-----Google Sign-In failed');
                   }
