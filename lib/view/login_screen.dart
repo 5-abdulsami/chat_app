@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         children: [
           AnimatedPositioned(
-              duration: const Duration(seconds: 1),
+              duration: const Duration(seconds: 2),
               top: mediaQuery.height * 0.15,
               // if _isAnimate is true then move to left else it disappears (comes from right)
               right: _isAnimate

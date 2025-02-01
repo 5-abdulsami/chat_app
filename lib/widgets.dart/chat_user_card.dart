@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/main.dart';
@@ -23,8 +24,16 @@ class _ChatUserCardState extends State<ChatUserCard> {
         child: InkWell(
           onTap: () {},
           child: ListTile(
-              leading: CircleAvatar(
-                child: Icon(Icons.check),
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(mediaQuery.height * 0.03),
+                child: CachedNetworkImage(
+                  height: mediaQuery.height * 0.06,
+                  width: mediaQuery.height * 0.06,
+                  imageUrl: widget.user.image,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
               ),
               title: Text(widget.user.name, style: GoogleFonts.poppins()),
               subtitle: Text(
@@ -33,7 +42,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 maxLines: 1,
               ),
               trailing: Text(
-                " ",
+                "12PM",
                 style: GoogleFonts.poppins(),
               )),
         ),

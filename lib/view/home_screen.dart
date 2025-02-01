@@ -2,11 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:linkup/api/api.dart';
 import 'package:linkup/auth/auth_service.dart';
 import 'package:linkup/main.dart';
 import 'package:linkup/model/chat_user.dart';
+import 'package:linkup/view/login_screen.dart';
 import 'package:linkup/widgets.dart/chat_user_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -36,14 +36,17 @@ class _HomeScreenState extends State<HomeScreen> {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
               case ConnectionState.none:
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
 
               case ConnectionState.active:
               case ConnectionState.done:
                 var list = [];
+                // fetching chat user (map) data from firestore and populating
+                // the list with chat user objects
                 final data = snapshot.data?.docs;
+
                 list = data!.map((e) => ChatUser.fromJson(e.data())).toList();
 
                 if (list.isNotEmpty) {
@@ -65,6 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: FloatingActionButton(
           onPressed: () async {
             await AuthService().signOut();
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()));
           },
           child: const Icon(Icons.add_comment_rounded),
         ),

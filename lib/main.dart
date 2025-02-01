@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // for only portrait full screen view
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     return MaterialApp(
