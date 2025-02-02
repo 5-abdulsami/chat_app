@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +6,7 @@ import 'package:linkup/auth/auth_service.dart';
 import 'package:linkup/main.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/view/login_screen.dart';
+import 'package:linkup/view/profile_screen.dart';
 import 'package:linkup/widgets.dart/chat_user_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,8 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
           "LinkUp",
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfileScreen(
+                              user: list[0],
+                            )));
+              },
+              icon: const Icon(Icons.person)),
         ],
       ),
       body: StreamBuilder(
