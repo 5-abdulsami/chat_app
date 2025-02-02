@@ -9,6 +9,9 @@ class API {
 
   static User get user => auth.currentUser!;
 
+  // me
+  static late ChatUser currentUser;
+
   static Future<bool> userExists() async {
     return (await firestore.collection('users').doc(user.uid).get()).exists;
   }
@@ -26,5 +29,22 @@ class API {
         image: user.photoURL.toString(),
         pushToken: '');
     await firestore.collection('users').doc(user.uid).set(chatUser.toJson());
+  }
+
+  static Future<void> getCurrentUserInfo() async {
+    firestore.collection("users").doc(user.uid).get().then((user) async {
+      if (user.exists) {
+        currentUser = ChatUser.fromJson(user.data()!);
+      } else {
+        await createUser().then((value) => getCurrentUserInfo());
+      }
+    });
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
+    return firestore
+        .collection('users')
+        .where('id', isNotEqualTo: user.uid)
+        .snapshots();
   }
 }

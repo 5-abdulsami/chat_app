@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/api/api.dart';
-import 'package:linkup/auth/auth_service.dart';
 import 'package:linkup/main.dart';
 import 'package:linkup/model/chat_user.dart';
-import 'package:linkup/view/login_screen.dart';
 import 'package:linkup/view/profile_screen.dart';
 import 'package:linkup/widgets.dart/chat_user_card.dart';
 
@@ -17,6 +15,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<ChatUser> list = [];
+
+  @override
+  void initState() {
+    super.initState();
+    API.getCurrentUserInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +37,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ProfileScreen(
-                              user: list[0],
+                              user: API.currentUser,
                             )));
               },
               icon: const Icon(Icons.person)),
         ],
       ),
       body: StreamBuilder(
-          stream: API.firestore.collection('users').snapshots(),
+          stream: API.getAllUsers(),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
