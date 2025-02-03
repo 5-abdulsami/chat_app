@@ -31,6 +31,13 @@ class API {
     await firestore.collection('users').doc(user.uid).set(chatUser.toJson());
   }
 
+  static Future<void> updateUser() async {
+    await firestore.collection('users').doc(user.uid).update({
+      'name': currentUser.name,
+      'about': currentUser.about,
+    });
+  }
+
   static Future<void> getCurrentUserInfo() async {
     firestore.collection("users").doc(user.uid).get().then((user) async {
       if (user.exists) {

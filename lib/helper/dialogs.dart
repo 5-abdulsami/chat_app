@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:linkup/utils/colors.dart';
 
 class Dialogs {
-  static void showSnackBar(BuildContext context, String message) {
+  static void showSnackbar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),
       backgroundColor: blueColor,

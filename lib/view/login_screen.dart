@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Image.asset('assets/images/icon.png')),
           Positioned(
               bottom: mediaQuery.height * 0.15,
-              left: mediaQuery.width * 0.065,
+              left: mediaQuery.width * 0.0750,
               width: mediaQuery.width * 0.85,
               height: mediaQuery.height * 0.07,
               child: ElevatedButton.icon(

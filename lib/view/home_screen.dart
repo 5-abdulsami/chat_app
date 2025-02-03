@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/api/api.dart';
@@ -14,7 +15,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<ChatUser> list = [];
+  List<ChatUser> _list = [];
+  List<ChatUser> _searchList = [];
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -26,11 +29,43 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "LinkUp",
-        ),
+        leading: const Icon(Icons.home),
+        title: _isSearching
+            ? TextField(
+                decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Search Name, Email..."),
+                autofocus: true,
+                style: const TextStyle(fontSize: 17, letterSpacing: 0.5),
+                onChanged: (value) {
+                  _searchList.clear();
+
+                  for (var user in _list) {
+                    if (user.name.toLowerCase().contains(value.toLowerCase()) ||
+                        user.email
+                            .toLowerCase()
+                            .contains(value.toLowerCase())) {
+                      _searchList.add(user);
+                      setState(() {
+                        _searchList;
+                      });
+                    }
+                  }
+                },
+              )
+            : const Text(
+                "LinkUp",
+              ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  _isSearching = !_isSearching;
+                });
+              },
+              icon: Icon(_isSearching
+                  ? CupertinoIcons.clear_circled_solid
+                  : Icons.search)),
           IconButton(
               onPressed: () {
                 Navigator.push(
@@ -41,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             )));
               },
               icon: const Icon(Icons.person)),
+          SizedBox(width: mediaQuery.width * 0.02),
         ],
       ),
       body: StreamBuilder(
@@ -55,20 +91,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
               case ConnectionState.active:
               case ConnectionState.done:
-                var list = [];
                 // fetching chat user (map) data from firestore and populating
                 // the list with chat user objects
                 final data = snapshot.data?.docs;
 
-                list = data!.map((e) => ChatUser.fromJson(e.data())).toList();
+                _list =
+                    data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
+                        [];
 
-                if (list.isNotEmpty) {
+                if (_list.isNotEmpty) {
                   return ListView.builder(
                       padding: EdgeInsets.only(top: mediaQuery.height * 0.01),
-                      itemCount: list.length,
+                      itemCount:
+                          _isSearching ? _searchList.length : _list.length,
                       physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return ChatUserCard(user: list[index]);
+                        return ChatUserCard(
+                            user: _isSearching
+                                ? _searchList[index]
+                                : _list[index]);
                       });
                 } else {
                   return Text("No connections found!",

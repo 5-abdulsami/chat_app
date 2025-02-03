@@ -1,13 +1,13 @@
 class ChatUser {
-  late final String id;
-  late final bool isOnline;
-  late final String name;
-  late final String email;
-  late final String about;
-  late final String lastOnline;
-  late final String createdAt;
-  late final String image;
-  late final String pushToken;
+  late String id;
+  late bool isOnline;
+  late String name;
+  late String email;
+  late String about;
+  late String lastOnline;
+  late String createdAt;
+  late String image;
+  late String pushToken;
 
   ChatUser(
       {required this.id,
@@ -35,7 +35,7 @@ class ChatUser {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
+    Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['isOnline'] = isOnline;
     data['name'] = name;
