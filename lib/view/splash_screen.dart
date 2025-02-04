@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:linkup/auth/auth_service.dart';
-import 'package:linkup/view/login_screen.dart';
+import 'package:linkup/utils/colors.dart';
 import 'package:linkup/view/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -20,24 +20,27 @@ class _SplashScreenState extends State<SplashScreen> {
       // exit full screen
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-      ));
+          systemNavigationBarColor: Colors.transparent));
 
       if (_authService.auth.currentUser != null) {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const HomeScreen()));
       } else {
         Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()));
+            MaterialPageRoute(builder: (context) => const HomeScreen()));
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
       body: Center(
-        child: Image.asset("assets/images/icon.png"),
+        child: Image.asset(
+          "assets/images/icon.png",
+          width: mediaQuery.width * 0.4,
+        ),
       ),
     );
   }

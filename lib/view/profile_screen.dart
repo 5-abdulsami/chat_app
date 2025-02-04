@@ -1,9 +1,12 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:linkup/api/api.dart';
 import 'package:linkup/auth/auth_service.dart';
 import 'package:linkup/helper/dialogs.dart';
-import 'package:linkup/main.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/utils/colors.dart';
 import 'package:linkup/view/login_screen.dart';
@@ -18,10 +21,11 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  List<ChatUser> list = [];
+  String? _image;
 
   @override
   Widget build(BuildContext context) {
+    var mediaQuery = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -43,27 +47,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   Stack(
                     children: [
-                      ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(mediaQuery.width * 0.05),
-                        child: CachedNetworkImage(
-                          imageUrl: widget.user.image,
-                          fit: BoxFit.fill,
-                          width: mediaQuery.width * 0.4,
-                          height: mediaQuery.height * 0.2,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      ),
+                      _image != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  mediaQuery.width * 0.05),
+                              child: Image.file(
+                                File(_image!),
+                                fit: BoxFit.fill,
+                                width: mediaQuery.width * 0.4,
+                                height: mediaQuery.height * 0.2,
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  mediaQuery.width * 0.05),
+                              child: CachedNetworkImage(
+                                imageUrl: widget.user.image,
+                                width: mediaQuery.width * 0.4,
+                                height: mediaQuery.height * 0.2,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                              ),
+                            ),
                       Positioned(
                         bottom: 0,
                         right: 0,
                         child: MaterialButton(
                           color: Colors.white,
                           elevation: 1,
-                          onPressed: () {},
+                          onPressed: () {
+                            _showBottomSheet(context);
+                          },
                           shape: const CircleBorder(),
                           child: const Icon(
                             Icons.edit,
@@ -167,5 +183,107 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  _showBottomSheet(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context).size;
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+        builder: (_) {
+          return ListView(
+            padding: EdgeInsets.only(
+                top: mediaQuery.height * 0.03,
+                bottom: mediaQuery.height * 0.05),
+            shrinkWrap: true,
+            children: [
+              const Center(
+                child: Text(
+                  "Pick Profile Picture",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                ),
+              ),
+              SizedBox(
+                height: mediaQuery.height * 0.03,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: whiteColor,
+                              fixedSize: Size(mediaQuery.width * 0.3,
+                                  mediaQuery.height * 0.15),
+                              shape: const CircleBorder()),
+                          onPressed: () async {
+                            final ImagePicker picker = ImagePicker();
+
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.gallery);
+
+                            if (image != null) {
+                              log("image path: ${image.path}, mime type : ${image.mimeType}");
+                              Navigator.pop(context);
+
+                              setState(() {
+                                _image = image.path;
+                              });
+                            }
+                          },
+                          child: Image.asset('assets/images/gallery.png')),
+                      SizedBox(
+                        height: mediaQuery.height * 0.01,
+                      ),
+                      const Text(
+                        "Gallery",
+                        style: TextStyle(fontSize: 17),
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: whiteColor,
+                              fixedSize: Size(mediaQuery.width * 0.3,
+                                  mediaQuery.height * 0.15),
+                              shape: const CircleBorder()),
+                          onPressed: () async {
+                            final ImagePicker picker = ImagePicker();
+
+                            final XFile? image = await picker.pickImage(
+                                source: ImageSource.camera);
+
+                            if (image != null) {
+                              log("image path: ${image.path}, mime type : ${image.mimeType}");
+                              Navigator.pop(context);
+
+                              setState(() {
+                                _image = image.path;
+                              });
+                            }
+                          },
+                          child: Image.asset('assets/images/camera.png')),
+                      SizedBox(
+                        height: mediaQuery.height * 0.01,
+                      ),
+                      const Text(
+                        "Camera",
+                        style: TextStyle(fontSize: 17),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: mediaQuery.height * 0.02,
+              ),
+            ],
+          );
+        });
   }
 }

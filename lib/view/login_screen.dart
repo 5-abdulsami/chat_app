@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/api/api.dart';
 import 'package:linkup/auth/auth_service.dart';
-import 'package:linkup/main.dart';
 import 'package:linkup/utils/colors.dart';
 
 import 'home_screen.dart';
@@ -31,6 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var mediaQuery = MediaQuery.of(context).size;
     mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(

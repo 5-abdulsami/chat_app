@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:linkup/view/login_screen.dart';
 import 'package:linkup/utils/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:linkup/view/splash_screen.dart';
 import 'firebase_options.dart';
-
-late Size mediaQuery;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +34,7 @@ class MyApp extends StatelessWidget {
             titleTextStyle:
                 GoogleFonts.poppins(color: blackColor, fontSize: 19)),
       ),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }
