@@ -232,6 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               setState(() {
                                 _image = image.path;
                               });
+                              API.updateProfilePicture(File(_image!));
                             }
                           },
                           child: Image.asset('assets/images/gallery.png')),
@@ -265,6 +266,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               setState(() {
                                 _image = image.path;
                               });
+
+                              API.updateProfilePicture(File(_image!));
                             }
                           },
                           child: Image.asset('assets/images/camera.png')),

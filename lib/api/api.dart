@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -62,6 +63,16 @@ class API {
 
   static Future<void> updateProfilePicture(File file) async {
     final ext = file.path.split(".").last;
-    await storage.ref().child("profile_pictures").child(user.uid).putFile(file);
+    final ref = storage.ref().child("profile_pictures/${user.uid}.$ext");
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .then((p0) {
+      log("Data transferred : ${p0.bytesTransferred / 1000} kb");
+    });
+
+    currentUser.image = await ref.getDownloadURL();
+    await firestore.collection("users").doc(user.uid).update({
+      'image': currentUser.image,
+    });
   }
 }

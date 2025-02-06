@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/model/chat_user.dart';
+import 'package:linkup/view/chat_screen.dart';
 
 class ChatUserCard extends StatefulWidget {
   final ChatUser user;
@@ -22,7 +23,14 @@ class _ChatUserCardState extends State<ChatUserCard> {
         padding: EdgeInsets.symmetric(
             horizontal: mediaQuery.width * 0.04, vertical: 4),
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ChatScreen(
+                          user: widget.user,
+                        )));
+          },
           child: ListTile(
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(mediaQuery.height * 0.03),
