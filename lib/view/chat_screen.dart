@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:linkup/model/chat_user.dart';
+import 'package:linkup/utils/colors.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -14,10 +15,14 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-      automaticallyImplyLeading: false,
-      flexibleSpace: _appBar(),
-    ));
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        flexibleSpace: _appBar(),
+      ),
+      body: Column(children: [
+        _chatInput(),
+      ]),
+    );
   }
 
   Widget _appBar() {
@@ -34,11 +39,11 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           ClipRRect(
-            borderRadius: BorderRadius.circular(mediaQuery.width * 0.05),
+            borderRadius: BorderRadius.circular(mediaQuery.height * 0.03),
             child: CachedNetworkImage(
+              height: mediaQuery.height * 0.06,
+              width: mediaQuery.height * 0.06,
               imageUrl: widget.user.image,
-              width: mediaQuery.width * 0.4,
-              height: mediaQuery.height * 0.2,
               placeholder: (context, url) => const CircularProgressIndicator(),
               errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
@@ -53,17 +58,81 @@ class _ChatScreenState extends State<ChatScreen> {
               Text(
                 widget.user.name,
                 style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-              SizedBox(
-                height: mediaQuery.height * 0.01,
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               Text(
                 widget.user.name,
                 style:
-                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
               ),
             ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _chatInput() {
+    var mediaQuery = MediaQuery.of(context).size;
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: mediaQuery.width * 0.02,
+          vertical: mediaQuery.height * 0.01),
+      child: Row(
+        children: [
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Row(
+                children: [
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.emoji_emotions,
+                        color: blueColor,
+                      )),
+                  const Expanded(
+                      child: TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Type something...",
+                    ),
+                  )),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.image,
+                        color: blueColor,
+                      )),
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.camera,
+                        color: blueColor,
+                      )),
+                  SizedBox(
+                    width: mediaQuery.width * 0.01,
+                  )
+                ],
+              ),
+            ),
+          ),
+          MaterialButton(
+            minWidth: 40,
+            padding: EdgeInsets.only(
+                left: mediaQuery.width * 0.007,
+                top: mediaQuery.width * 0.025,
+                bottom: mediaQuery.width * 0.025),
+            onPressed: () {},
+            color: greenColor,
+            shape: const CircleBorder(),
+            child: const Icon(
+              Icons.send,
+              color: whiteColor,
+            ),
           )
         ],
       ),
