@@ -81,6 +81,43 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Row(
         children: [
           Expanded(
+            child: StreamBuilder(
+                stream: const Stream.empty(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      // final data = snapshot.data?.docs;
+
+                      // _list = data
+                      //         ?.map((e) => ChatUser.fromJson(e.data()))
+                      //         .toList() ??
+                      //     [];
+
+                      final _list = ['hi', 'hello'];
+
+                      if (_list.isNotEmpty) {
+                        return ListView.builder(
+                            padding:
+                                EdgeInsets.only(top: mediaQuery.height * 0.01),
+                            itemCount: _list.length,
+                            physics: const BouncingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return Text("Message : ${_list[index]}");
+                            });
+                      } else {
+                        return Text("Say Hi!", style: TextStyle(fontSize: 20));
+                      }
+                  }
+                }),
+          ),
+          Expanded(
             child: Card(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),

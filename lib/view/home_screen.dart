@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/api/api.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/view/profile_screen.dart';
-import 'package:linkup/widgets.dart/chat_user_card.dart';
+import 'package:linkup/widgets/chat_user_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
