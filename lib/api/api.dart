@@ -75,4 +75,8 @@ class API {
       'image': currentUser.image,
     });
   }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages() {
+    return firestore.collection('messages').snapshots();
+  }
 }

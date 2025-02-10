@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:linkup/api/api.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/utils/colors.dart';
 
@@ -82,7 +86,7 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: StreamBuilder(
-                stream: const Stream.empty(),
+                stream: API.getAllMessages(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
@@ -93,7 +97,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
                     case ConnectionState.active:
                     case ConnectionState.done:
-                      // final data = snapshot.data?.docs;
+                      final data = snapshot.data?.docs;
+                      log("Data : ${data![0].data()}");
 
                       // _list = data
                       //         ?.map((e) => ChatUser.fromJson(e.data()))
