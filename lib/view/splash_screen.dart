@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:linkup/auth/auth_service.dart';
-import 'package:linkup/utils/colors.dart';
 import 'package:linkup/view/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -18,10 +16,6 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
       // exit full screen
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-          systemNavigationBarColor: whiteColor, statusBarColor: whiteColor));
-
       if (_authService.auth.currentUser != null) {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const HomeScreen()));
