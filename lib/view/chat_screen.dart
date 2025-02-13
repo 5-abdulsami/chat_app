@@ -4,7 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:linkup/api/api.dart';
 import 'package:linkup/model/chat_user.dart';
+import 'package:linkup/model/message.dart';
 import 'package:linkup/utils/colors.dart';
+import 'package:linkup/widgets/message_card.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -15,10 +17,13 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  // for storing all messages
+  final List<Message> _list = [];
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: lightBlueColor,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         flexibleSpace: _appBar(),
@@ -44,8 +49,21 @@ class _ChatScreenState extends State<ChatScreen> {
                     //         ?.map((e) => ChatUser.fromJson(e.data()))
                     //         .toList() ??
                     //     [];
-
-                    final _list = ['hi', 'hello'];
+                    _list.clear();
+                    _list.add(Message(
+                        msg: "Hello",
+                        toId: "xyz",
+                        read: "",
+                        type: Type.text,
+                        fromId: API.user.uid,
+                        sent: '12:00PM'));
+                    _list.add(Message(
+                        msg: "Hiii",
+                        toId: API.user.uid,
+                        read: "",
+                        type: Type.text,
+                        fromId: 'xyz',
+                        sent: '12:05PM'));
 
                     if (_list.isNotEmpty) {
                       return ListView.builder(
@@ -54,7 +72,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           itemCount: _list.length,
                           physics: const BouncingScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return Text("Message : ${_list[index]}");
+                            return MessageCard(
+                              message: _list[index],
+                            );
                           });
                     } else {
                       return Text("Say Hi!", style: TextStyle(fontSize: 20));
@@ -103,7 +123,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               Text(
-                widget.user.name,
+                widget.user.email,
                 style:
                     const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
               ),
