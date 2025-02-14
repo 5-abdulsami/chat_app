@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:linkup/api/api.dart';
@@ -17,8 +15,9 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _messageController = TextEditingController();
   // for storing all messages
-  final List<Message> _list = [];
+  List<Message> _list = [];
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
@@ -31,39 +30,21 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(children: [
         Expanded(
           child: StreamBuilder(
-              stream: API.getAllMessages(),
+              stream: API.getAllMessages(widget.user),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
                   case ConnectionState.none:
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const SizedBox();
 
                   case ConnectionState.active:
                   case ConnectionState.done:
                     final data = snapshot.data?.docs;
-                    log("Data : ${data![0].data()}");
-
-                    // _list = data
-                    //         ?.map((e) => ChatUser.fromJson(e.data()))
-                    //         .toList() ??
-                    //     [];
-                    _list.clear();
-                    _list.add(Message(
-                        msg: "Hello",
-                        toId: "xyz",
-                        read: "",
-                        type: Type.text,
-                        fromId: API.user.uid,
-                        sent: '12:00PM'));
-                    _list.add(Message(
-                        msg: "Hiii",
-                        toId: API.user.uid,
-                        read: "",
-                        type: Type.text,
-                        fromId: 'xyz',
-                        sent: '12:05PM'));
+                    // converting json data from firestore to Message objects
+                    // and storing them in _list
+                    _list =
+                        data?.map((e) => Message.fromJson(e.data())).toList() ??
+                            [];
 
                     if (_list.isNotEmpty) {
                       return ListView.builder(
@@ -77,7 +58,10 @@ class _ChatScreenState extends State<ChatScreen> {
                             );
                           });
                     } else {
-                      return Text("Say Hi!", style: TextStyle(fontSize: 20));
+                      return const Center(
+                        child:
+                            Text("Say Hiii!", style: TextStyle(fontSize: 20)),
+                      );
                     }
                 }
               }),
@@ -154,11 +138,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         Icons.emoji_emotions,
                         color: blueColor,
                       )),
-                  const Expanded(
+                  Expanded(
                       child: TextField(
+                    controller: _messageController,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: "Type something...",
                     ),
@@ -188,7 +173,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 left: mediaQuery.width * 0.007,
                 top: mediaQuery.width * 0.025,
                 bottom: mediaQuery.width * 0.025),
-            onPressed: () {},
+            onPressed: () {
+              if (_messageController.text.isNotEmpty) {
+                API.sendMessage(widget.user, _messageController.text);
+                _messageController.text = '';
+              }
+            },
             color: greenColor,
             shape: const CircleBorder(),
             child: const Icon(

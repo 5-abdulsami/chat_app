@@ -98,9 +98,22 @@ class _MessageCardState extends State<MessageCard> {
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
-                  child: Text(
-                    widget.message.sent,
-                    style: const TextStyle(fontSize: 11, color: greyColor),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        widget.message.sent,
+                        style: const TextStyle(fontSize: 11, color: greyColor),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Icon(
+                          Icons.done_all,
+                          size: 17,
+                          color: blueColor,
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ],
