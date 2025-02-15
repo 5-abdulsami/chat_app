@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linkup/api/api.dart';
+import 'package:linkup/helper/date_util.dart';
 import 'package:linkup/model/message.dart';
 import 'package:linkup/utils/colors.dart';
 
@@ -21,6 +22,10 @@ class _MessageCardState extends State<MessageCard> {
 
   // sender (other user) message
   Widget _blueMessage() {
+    // update last read message if sender and reciever are different
+    if (widget.message.read.isEmpty) {
+      API.upateMessageReadStatus(widget.message);
+    }
     var mediaQuery = MediaQuery.of(context).size;
     return Align(
       alignment: Alignment.centerLeft,
@@ -54,7 +59,8 @@ class _MessageCardState extends State<MessageCard> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    widget.message.sent,
+                    DateUtil.getFormattedTime(
+                        context: context, time: widget.message.sent),
                     style: const TextStyle(fontSize: 11, color: greyColor),
                   ),
                 ),
@@ -102,17 +108,19 @@ class _MessageCardState extends State<MessageCard> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        widget.message.sent,
+                        DateUtil.getFormattedTime(
+                            context: context, time: widget.message.sent),
                         style: const TextStyle(fontSize: 11, color: greyColor),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 5),
-                        child: Icon(
-                          Icons.done_all,
-                          size: 17,
-                          color: blueColor,
-                        ),
-                      )
+                      if (widget.message.read.isNotEmpty)
+                        const Padding(
+                          padding: EdgeInsets.only(left: 5),
+                          child: Icon(
+                            Icons.done_all,
+                            size: 17,
+                            color: blueColor,
+                          ),
+                        )
                     ],
                   ),
                 ),

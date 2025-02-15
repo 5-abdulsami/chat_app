@@ -106,4 +106,11 @@ class API {
 
     await ref.doc(time).set(message.toJson());
   }
+
+  static Future<void> upateMessageReadStatus(Message message) async {
+    firestore
+        .collection('chats/${getConversationId(message.fromId)}/messages/')
+        .doc(message.sent)
+        .update({'read': DateTime.now().microsecondsSinceEpoch.toString()});
+  }
 }
