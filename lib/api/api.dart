@@ -91,7 +91,7 @@ class API {
 
   static Future<void> sendMessage(ChatUser chatUser, String msg) async {
     // for unique doc id (message sending time)
-    final time = DateTime.now().microsecondsSinceEpoch.toString();
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
 
     // message to send
     final Message message = Message(
@@ -110,7 +110,7 @@ class API {
   static Future<void> upateMessageReadStatus(Message message) async {
     firestore
         .collection('chats/${getConversationId(message.fromId)}/messages/')
-        .doc(message.sent)
+        .doc(message.sent) // as we stored the unique id as current time in sent
         .update({'read': DateTime.now().microsecondsSinceEpoch.toString()});
   }
 
