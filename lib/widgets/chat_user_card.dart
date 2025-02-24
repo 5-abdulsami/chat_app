@@ -63,7 +63,11 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       title:
                           Text(widget.user.name, style: GoogleFonts.poppins()),
                       subtitle: Text(
-                        _message != null ? _message!.msg : widget.user.about,
+                        _message != null
+                            ? _message!.type == Type.image
+                                ? 'image'
+                                : _message!.msg
+                            : widget.user.about,
                         style: GoogleFonts.poppins(),
                         maxLines: 1,
                       ),

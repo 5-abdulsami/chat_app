@@ -70,6 +70,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                         if (_list.isNotEmpty) {
                           return ListView.builder(
+                              reverse: true,
                               padding: EdgeInsets.only(
                                   top: mediaQuery.height * 0.01),
                               itemCount: _list.length,
