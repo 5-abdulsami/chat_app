@@ -25,6 +25,8 @@ class _ChatScreenState extends State<ChatScreen> {
   List<Message> _list = [];
 
   bool _showEmojis = false;
+  // to check if image is being uploaded or not
+  bool _isUploading = false;
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
@@ -89,6 +91,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     }
                   }),
             ),
+            if (_isUploading)
+              const Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                ),
+              ),
             _chatInput(),
             _showEmojis
                 ? SizedBox(
@@ -201,7 +213,18 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   )),
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+
+                        final List<XFile?> images =
+                            await picker.pickMultiImage(imageQuality: 70);
+
+                        for (var img in images) {
+                          setState(() => _isUploading = true);
+                          API.sendChatImage(widget.user, File(img!.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
                       icon: const Icon(
                         Icons.image,
                         color: blueColor,
@@ -214,10 +237,12 @@ class _ChatScreenState extends State<ChatScreen> {
                             source: ImageSource.camera, imageQuality: 70);
 
                         if (image != null) {
+                          setState(() => _isUploading = true);
                           log("image path: ${image.path}, mime type : ${image.mimeType}");
                           Navigator.pop(context);
 
                           API.sendChatImage(widget.user, File(image.path));
+                          setState(() => _isUploading = false);
                         }
                       },
                       icon: const Icon(
