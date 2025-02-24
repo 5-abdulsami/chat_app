@@ -1,8 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:linkup/api/api.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/model/message.dart';
@@ -204,7 +206,19 @@ class _ChatScreenState extends State<ChatScreen> {
                         color: blueColor,
                       )),
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+
+                        final XFile? image = await picker.pickImage(
+                            source: ImageSource.camera, imageQuality: 70);
+
+                        if (image != null) {
+                          log("image path: ${image.path}, mime type : ${image.mimeType}");
+                          Navigator.pop(context);
+
+                          API.sendChatImage(widget.user, File(image.path));
+                        }
+                      },
                       icon: const Icon(
                         Icons.camera,
                         color: blueColor,
@@ -224,7 +238,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 bottom: mediaQuery.width * 0.025),
             onPressed: () {
               if (_messageController.text.isNotEmpty) {
-                API.sendMessage(widget.user, _messageController.text);
+                API.sendMessage(
+                    widget.user, _messageController.text, Type.text);
                 _messageController.text = '';
               }
             },

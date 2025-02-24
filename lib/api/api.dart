@@ -89,7 +89,8 @@ class API {
         .snapshots();
   }
 
-  static Future<void> sendMessage(ChatUser chatUser, String msg) async {
+  static Future<void> sendMessage(
+      ChatUser chatUser, String msg, Type type) async {
     // for unique doc id (message sending time)
     final time = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -98,7 +99,7 @@ class API {
         msg: msg,
         toId: chatUser.id,
         read: "",
-        type: Type.text,
+        type: type,
         fromId: user.uid,
         sent: time);
     final ref = firestore
@@ -121,5 +122,19 @@ class API {
         .orderBy('sent', descending: true)
         .limit(1)
         .snapshots();
+  }
+
+  // send image as message
+  static Future<void> sendChatImage(ChatUser chatUser, File file) async {
+    final ext = file.path.split(".").last;
+    final ref = storage.ref().child(
+        "images/${getConversationId(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext");
+    await ref
+        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+        .then((p0) {
+      log("Data transferred : ${p0.bytesTransferred / 1000} kb");
+    });
+    final imageUrl = await ref.getDownloadURL();
+    await sendMessage(chatUser, imageUrl, Type.image);
   }
 }
