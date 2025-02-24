@@ -62,15 +62,29 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       ),
                       title:
                           Text(widget.user.name, style: GoogleFonts.poppins()),
-                      subtitle: Text(
-                        _message != null
-                            ? _message!.type == Type.image
-                                ? 'image'
-                                : _message!.msg
-                            : widget.user.about,
-                        style: GoogleFonts.poppins(),
-                        maxLines: 1,
-                      ),
+                      subtitle: _message != null
+                          ? Row(
+                              children: [
+                                _message!.type == Type.image
+                                    ? const Icon(
+                                        Icons.image,
+                                        size: 20,
+                                      )
+                                    : Container(),
+                                Text(
+                                  _message!.type == Type.image
+                                      ? 'image'
+                                      : _message!.msg,
+                                  style: GoogleFonts.poppins(),
+                                  maxLines: 1,
+                                )
+                              ],
+                            )
+                          : Text(
+                              widget.user.about,
+                              style: GoogleFonts.poppins(),
+                              maxLines: 1,
+                            ),
                       trailing: _message == null
                           ? null
                           : _message!.read.isEmpty &&

@@ -6,6 +6,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:linkup/api/api.dart';
+import 'package:linkup/helper/date_util.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/model/message.dart';
 import 'package:linkup/utils/colors.dart';
@@ -40,8 +41,6 @@ class _ChatScreenState extends State<ChatScreen> {
               // then hide emojis
               _showEmojis = !_showEmojis;
             });
-          } else {
-            Navigator.of(context).pop();
           }
         },
         child: Scaffold(
@@ -127,46 +126,61 @@ class _ChatScreenState extends State<ChatScreen> {
     var mediaQuery = MediaQuery.of(context).size;
     return InkWell(
       onTap: () {},
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(mediaQuery.height * 0.03),
-            child: CachedNetworkImage(
-              height: mediaQuery.height * 0.06,
-              width: mediaQuery.height * 0.06,
-              imageUrl: widget.user.image,
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-          ),
-          SizedBox(
-            width: mediaQuery.width * 0.02,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                widget.user.name,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-              Text(
-                widget.user.email,
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-              ),
-            ],
-          )
-        ],
-      ),
+      child: StreamBuilder(
+          stream: API.getUserInfo(widget.user),
+          builder: (context, snapshot) {
+            final data = snapshot.data?.docs;
+            var list = data?.map((e) => ChatUser.fromJson(e.data())).toList();
+            return Row(
+              children: [
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(mediaQuery.height * 0.03),
+                  child: CachedNetworkImage(
+                    height: mediaQuery.height * 0.06,
+                    width: mediaQuery.height * 0.06,
+                    imageUrl:
+                        list!.isNotEmpty ? list[0].image : widget.user.image,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
+                ),
+                SizedBox(
+                  width: mediaQuery.width * 0.02,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      list.isNotEmpty ? list[0].image : widget.user.name,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      list.isNotEmpty
+                          ? list[0].isOnline
+                              ? 'Online'
+                              : DateUtil.getLastActiveTime(
+                                  context: context, time: list[0].lastOnline)
+                          : DateUtil.getLastActiveTime(
+                              context: context, time: widget.user.lastOnline),
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w300),
+                    ),
+                  ],
+                )
+              ],
+            );
+          }),
     );
   }
 

@@ -23,6 +23,30 @@ class DateUtil {
     return '${sentTime.day} ${_getMonthName(sentTime.month)}';
   }
 
+  static String getLastActiveTime(
+      {required BuildContext context, required String time}) {
+    final int i = int.tryParse(time) ?? -1;
+    if (i == -1) return 'Last Active not available';
+    final DateTime lastActiveTime = DateTime.fromMillisecondsSinceEpoch(i);
+    final DateTime now = DateTime.now();
+
+    String formattedTime =
+        TimeOfDay.fromDateTime(lastActiveTime).format(context);
+
+    if (now.day == lastActiveTime.day &&
+        now.month == lastActiveTime.month &&
+        now.year == lastActiveTime.year) {
+      return 'Last seen today at $formattedTime';
+    }
+
+    if ((now.difference(lastActiveTime).inHours / 24).round() == 1) {
+      return 'Last seen yesterday at $formattedTime';
+    }
+
+    String month = _getMonthName(lastActiveTime.month);
+    return 'Last seen on ${lastActiveTime.day} $month at $formattedTime';
+  }
+
   static String _getMonthName(int month) {
     switch (month) {
       case 1:

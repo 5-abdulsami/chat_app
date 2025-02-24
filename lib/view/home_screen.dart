@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/api/api.dart';
 import 'package:linkup/model/chat_user.dart';
@@ -21,7 +24,23 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    // for setting user status to active initially
+    API.updateActiveStatus(isOnline: true);
     API.getCurrentUserInfo();
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      log('Message: $message');
+
+      // setting user active status based on the app lifecycle events
+      if (message.toString().contains('pause')) {
+        API.updateActiveStatus(isOnline: false);
+      }
+
+      if (message.toString().contains('resume')) {
+        API.updateActiveStatus(isOnline: true);
+      }
+
+      return Future.value(message);
+    });
   }
 
   @override

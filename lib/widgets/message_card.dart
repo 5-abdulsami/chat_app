@@ -145,24 +145,28 @@ class _MessageCardState extends State<MessageCard> {
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        DateUtil.getFormattedTime(
-                            context: context, time: widget.message.sent),
-                        style: const TextStyle(fontSize: 11, color: greyColor),
-                      ),
-                      if (widget.message.read.isNotEmpty)
-                        const Padding(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Icon(
-                            Icons.done_all,
-                            size: 17,
-                            color: blueColor,
-                          ),
-                        )
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          DateUtil.getFormattedTime(
+                              context: context, time: widget.message.sent),
+                          style:
+                              const TextStyle(fontSize: 11, color: greyColor),
+                        ),
+                        if (widget.message.read.isNotEmpty)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 5),
+                            child: Icon(
+                              Icons.done_all,
+                              size: 17,
+                              color: blueColor,
+                            ),
+                          )
+                      ],
+                    ),
                   ),
                 ),
               ],
