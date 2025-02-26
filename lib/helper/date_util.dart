@@ -9,7 +9,9 @@ class DateUtil {
   }
 
   static String getLastMessageTime(
-      {required BuildContext context, required String time}) {
+      {required BuildContext context,
+      required String time,
+      bool showYear = false}) {
     final DateTime sentTime =
         DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     final DateTime now = DateTime.now();
@@ -20,7 +22,9 @@ class DateUtil {
       return TimeOfDay.fromDateTime(sentTime).format(context);
     }
 
-    return '${sentTime.day} ${_getMonthName(sentTime.month)}';
+    return showYear
+        ? '${sentTime.day} ${_getMonthName(sentTime.month)} ${sentTime.year}'
+        : '${sentTime.day} ${_getMonthName(sentTime.month)}';
   }
 
   static String getLastActiveTime(

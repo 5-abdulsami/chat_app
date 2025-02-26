@@ -31,12 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
       log('Message: $message');
 
       // setting user active status based on the app lifecycle events
-      if (message.toString().contains('pause')) {
-        API.updateActiveStatus(isOnline: false);
-      }
+      if (API.auth.currentUser != null) {
+        if (message.toString().contains('pause')) {
+          API.updateActiveStatus(isOnline: false);
+        }
 
-      if (message.toString().contains('resume')) {
-        API.updateActiveStatus(isOnline: true);
+        if (message.toString().contains('resume')) {
+          API.updateActiveStatus(isOnline: true);
+        }
       }
 
       return Future.value(message);

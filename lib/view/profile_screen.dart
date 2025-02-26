@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:linkup/api/api.dart';
@@ -162,11 +163,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           backgroundColor: redColor,
           onPressed: () async {
             Dialogs.showProgressDialog(context);
+            await API.updateActiveStatus(isOnline: false);
             await AuthService().signOut().then((value) {
               // for removing progress dialog
               Navigator.pop(context);
               // for moving to home screen
               Navigator.pop(context);
+
+              API.auth = FirebaseAuth.instance;
 
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()));

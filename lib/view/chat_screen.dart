@@ -10,6 +10,7 @@ import 'package:linkup/helper/date_util.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/model/message.dart';
 import 'package:linkup/utils/colors.dart';
+import 'package:linkup/view/chat_profile_screen.dart';
 import 'package:linkup/widgets/message_card.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -125,7 +126,12 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _appBar() {
     var mediaQuery = MediaQuery.of(context).size;
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChatProfileScreen(user: widget.user)));
+      },
       child: StreamBuilder(
           stream: API.getUserInfo(widget.user),
           builder: (context, snapshot) {
