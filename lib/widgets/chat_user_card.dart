@@ -7,6 +7,7 @@ import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/model/message.dart';
 import 'package:linkup/utils/colors.dart';
 import 'package:linkup/view/chat_screen.dart';
+import 'package:linkup/widgets/dialogs/profile_dialog.dart';
 
 class ChatUserCard extends StatefulWidget {
   final ChatUser user;
@@ -47,17 +48,24 @@ class _ChatUserCardState extends State<ChatUserCard> {
                   if (list.isNotEmpty) _message = list[0];
 
                   return ListTile(
-                      leading: ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(mediaQuery.height * 0.03),
-                        child: CachedNetworkImage(
-                          height: mediaQuery.height * 0.06,
-                          width: mediaQuery.height * 0.06,
-                          imageUrl: widget.user.image,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                      leading: InkWell(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (_) => ProfileDialog(user: widget.user));
+                        },
+                        child: ClipRRect(
+                          borderRadius:
+                              BorderRadius.circular(mediaQuery.height * 0.03),
+                          child: CachedNetworkImage(
+                            height: mediaQuery.height * 0.06,
+                            width: mediaQuery.height * 0.06,
+                            imageUrl: widget.user.image,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
                         ),
                       ),
                       title:

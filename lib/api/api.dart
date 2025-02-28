@@ -24,7 +24,7 @@ class API {
   }
 
   static Future<void> createUser() async {
-    final time = DateTime.now().microsecondsSinceEpoch.toString();
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
     final chatUser = ChatUser(
         id: user.uid,
         isOnline: false,
