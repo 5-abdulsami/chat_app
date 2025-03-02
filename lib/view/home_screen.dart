@@ -24,8 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // for setting user status to active initially
-    API.updateActiveStatus(isOnline: true);
     API.getCurrentUserInfo();
     SystemChannels.lifecycle.setMessageHandler((message) {
       log('Message: $message');

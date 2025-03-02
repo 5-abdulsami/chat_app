@@ -63,7 +63,8 @@ class _ProfileScreenState extends State<ChatProfileScreen> {
                       "About: ",
                       style: TextStyle(
                           color: blackColor,
-                          fontSize: mediaQuery.height * 0.025),
+                          fontSize: mediaQuery.height * 0.025,
+                          fontWeight: FontWeight.w500),
                     ),
                     Text(
                       widget.user.about,

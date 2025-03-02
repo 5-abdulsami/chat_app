@@ -136,7 +136,9 @@ class _ChatScreenState extends State<ChatScreen> {
           stream: API.getUserInfo(widget.user),
           builder: (context, snapshot) {
             final data = snapshot.data?.docs;
-            var list = data?.map((e) => ChatUser.fromJson(e.data())).toList();
+            log("----------data stream : ${API.getUserInfo(widget.user)}");
+            var list =
+                data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
             return Row(
               children: [
                 IconButton(
@@ -152,7 +154,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     height: mediaQuery.height * 0.06,
                     width: mediaQuery.height * 0.06,
                     imageUrl:
-                        list!.isNotEmpty ? list[0].image : widget.user.image,
+                        list.isNotEmpty ? list[0].image : widget.user.image,
                     placeholder: (context, url) =>
                         const CircularProgressIndicator(),
                     errorWidget: (context, url, error) =>
@@ -167,7 +169,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      list.isNotEmpty ? list[0].image : widget.user.name,
+                      list.isNotEmpty ? list[0].name : widget.user.name,
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.w500),
                     ),
