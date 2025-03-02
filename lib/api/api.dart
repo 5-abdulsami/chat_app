@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart';
-import 'package:linkup/api/notification_acess_token.dart';
+import 'package:linkup/api/notification_access_token.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/model/message.dart';
 
