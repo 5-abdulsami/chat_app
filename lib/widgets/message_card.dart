@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:linkup/api/api.dart';
 import 'package:linkup/helper/date_util.dart';
+import 'package:linkup/helper/dialogs.dart';
 import 'package:linkup/model/message.dart';
 import 'package:linkup/utils/colors.dart';
 
@@ -207,7 +209,14 @@ class _MessageCardState extends State<MessageCard> {
                         size: 26,
                       ),
                       name: "Copy Text",
-                      onTap: () {},
+                      onTap: () async {
+                        await Clipboard.setData(
+                                ClipboardData(text: widget.message.msg))
+                            .then((value) {
+                          Navigator.pop(context);
+                          Dialogs.showSnackbar(context, "Text Copied");
+                        });
+                      },
                     )
                   : OptionItem(
                       icon: const Icon(
@@ -242,7 +251,9 @@ class _MessageCardState extends State<MessageCard> {
                     size: 26,
                   ),
                   name: "Delete Message",
-                  onTap: () {},
+                  onTap: () {
+                    API.deleteMessage(widget.message);
+                  },
                 ),
               Divider(
                 color: Colors.black54,
@@ -251,18 +262,21 @@ class _MessageCardState extends State<MessageCard> {
               ),
               OptionItem(
                 icon: const Icon(
-                  Icons.delete,
+                  Icons.remove_red_eye,
                   color: blueColor,
                 ),
-                name: "Sent At",
+                name:
+                    "Sent At : ${DateUtil.getMessageTime(context: context, time: widget.message.sent)}",
                 onTap: () {},
               ),
               OptionItem(
                 icon: const Icon(
-                  Icons.delete,
+                  Icons.remove_red_eye,
                   color: greenColor,
                 ),
-                name: "Read At",
+                name: widget.message.read.isEmpty
+                    ? "Read At: Not seen yet"
+                    : "Read At : ${DateUtil.getMessageTime(context: context, time: widget.message.read)}",
                 onTap: () {},
               ),
             ],

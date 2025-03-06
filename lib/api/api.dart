@@ -179,6 +179,17 @@ class API {
     });
   }
 
+  static Future<void> deleteMessage(Message message) async {
+    await firestore
+        .collection('chats/${getConversationId(message.toId)}/messages/')
+        .doc(message.sent)
+        .delete();
+
+    if (message.type == Type.image) {
+      await storage.refFromURL(message.msg).delete();
+    }
+  }
+
   static Future<void> sendPushNotification(
       ChatUser chatUser, String msg) async {
     NotificationAccessToken accessToken = NotificationAccessToken();
