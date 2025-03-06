@@ -16,9 +16,12 @@ class MessageCard extends StatefulWidget {
 class _MessageCardState extends State<MessageCard> {
   @override
   Widget build(BuildContext context) {
-    return API.user.uid == widget.message.fromId
-        ? _greenMessage() // our own message
-        : _blueMessage(); // sender (other user) message
+    bool isMe = API.user.uid == widget.message.fromId;
+    return InkWell(
+        onLongPress: () {
+          _showBottomSheet(context, isMe);
+        },
+        child: isMe ? _greenMessage() : _blueMessage());
   }
 
   // sender (other user) message
@@ -172,6 +175,129 @@ class _MessageCardState extends State<MessageCard> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  _showBottomSheet(BuildContext context, bool isMe) {
+    final mediaQuery = MediaQuery.of(context).size;
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+        builder: (_) {
+          return ListView(
+            shrinkWrap: true,
+            children: [
+              Container(
+                height: 4,
+                margin: EdgeInsets.symmetric(
+                    horizontal: mediaQuery.width * 0.4,
+                    vertical: mediaQuery.height * 0.015),
+                decoration: BoxDecoration(
+                    color: greyColor, borderRadius: BorderRadius.circular(8)),
+              ),
+              widget.message.type == Type.text
+                  ? OptionItem(
+                      icon: const Icon(
+                        Icons.copy,
+                        color: blueColor,
+                        size: 26,
+                      ),
+                      name: "Copy Text",
+                      onTap: () {},
+                    )
+                  : OptionItem(
+                      icon: const Icon(
+                        Icons.download,
+                        color: blueColor,
+                        size: 26,
+                      ),
+                      name: "Save Image",
+                      onTap: () {},
+                    ),
+              if (isMe)
+                Divider(
+                  color: Colors.black54,
+                  endIndent: mediaQuery.width * 0.04,
+                  indent: mediaQuery.width * 0.04,
+                ),
+              if (widget.message.type == Type.text && isMe)
+                OptionItem(
+                  icon: const Icon(
+                    Icons.edit,
+                    color: blueColor,
+                    size: 26,
+                  ),
+                  name: "Edit Message",
+                  onTap: () {},
+                ),
+              if (isMe)
+                OptionItem(
+                  icon: const Icon(
+                    Icons.delete,
+                    color: blueColor,
+                    size: 26,
+                  ),
+                  name: "Delete Message",
+                  onTap: () {},
+                ),
+              Divider(
+                color: Colors.black54,
+                endIndent: mediaQuery.width * 0.04,
+                indent: mediaQuery.width * 0.04,
+              ),
+              OptionItem(
+                icon: const Icon(
+                  Icons.delete,
+                  color: blueColor,
+                ),
+                name: "Sent At",
+                onTap: () {},
+              ),
+              OptionItem(
+                icon: const Icon(
+                  Icons.delete,
+                  color: greenColor,
+                ),
+                name: "Read At",
+                onTap: () {},
+              ),
+            ],
+          );
+        });
+  }
+}
+
+class OptionItem extends StatelessWidget {
+  final Icon icon;
+  final String name;
+  final VoidCallback onTap;
+  const OptionItem(
+      {super.key, required this.icon, required this.name, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    var mediaQuery = MediaQuery.of(context).size;
+    return InkWell(
+      onTap: () => onTap(),
+      child: Padding(
+        padding: EdgeInsets.only(
+            left: mediaQuery.width * 0.05,
+            top: mediaQuery.height * 0.015,
+            bottom: mediaQuery.height * 0.015),
+        child: Row(
+          children: [
+            icon,
+            Flexible(
+                child: Text(
+              "     $name",
+              style: const TextStyle(
+                  fontSize: 15, color: Colors.black54, letterSpacing: 0.5),
+            )),
+          ],
         ),
       ),
     );
