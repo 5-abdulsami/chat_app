@@ -6,8 +6,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:http/http.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:linkup/api/notification_access_token.dart';
+import 'package:linkup/helper/dialogs.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/model/message.dart';
 
@@ -203,7 +206,7 @@ class API {
     };
     try {
       if (bearerToken != null) {
-        var response = await post(
+        var response = await http.post(
           Uri.parse(
               'https://fcm.googleapis.com/v1/projects/tiers-22911/messages:send'),
           headers: {
@@ -217,6 +220,26 @@ class API {
       }
     } catch (e) {
       log("\nsendPushNotification: $e");
+    }
+  }
+
+  static Future<void> saveImage(BuildContext context, String url) async {
+    try {
+      var response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var imageBytes = response.bodyBytes;
+
+        final result = await ImageGallerySaver.saveImage(imageBytes);
+        log("Image saved! Result: $result");
+        Dialogs.showSnackbar(context, "Image Saved successfully!");
+      } else {
+        log("Failed to load image. Status code: ${response.statusCode}");
+        Dialogs.showSnackbar(context, "Error while saving image.");
+      }
+    } catch (e) {
+      log("Error saving image: $e");
+      Dialogs.showSnackbar(context, "Error while saving image.");
     }
   }
 }

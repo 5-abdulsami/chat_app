@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +8,8 @@ import 'package:linkup/helper/date_util.dart';
 import 'package:linkup/helper/dialogs.dart';
 import 'package:linkup/model/message.dart';
 import 'package:linkup/utils/colors.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:http/http.dart' as http;
 
 class MessageCard extends StatefulWidget {
   final Message message;
@@ -225,7 +229,11 @@ class _MessageCardState extends State<MessageCard> {
                         size: 26,
                       ),
                       name: "Save Image",
-                      onTap: () {},
+                      onTap: () async {
+                        await API.saveImage(context, widget.message.msg);
+
+                        Navigator.pop(context);
+                      },
                     ),
               if (isMe)
                 Divider(
