@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:linkup/api/api.dart';
+import 'package:linkup/helper/dialogs.dart';
 import 'package:linkup/model/chat_user.dart';
 import 'package:linkup/view/profile_screen.dart';
 import 'package:linkup/widgets/chat_user_card.dart';
+
+import '../utils/colors.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -156,12 +159,69 @@ class _HomeScreenState extends State<HomeScreen> {
           floatingActionButton: Padding(
             padding: const EdgeInsets.all(10),
             child: FloatingActionButton(
-              onPressed: () async {},
+              onPressed: () async {
+                _addChatUserDialog();
+              },
               child: const Icon(Icons.add_comment_rounded),
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _addChatUserDialog() {
+    String email = "";
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              contentPadding:
+                  EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
+              title: Row(
+                children: [
+                  Icon(Icons.person, color: blueColor, size: 28),
+                  Text("  Add User")
+                ],
+              ),
+              content: TextFormField(
+                autofocus: true,
+                maxLines: null,
+                decoration: InputDecoration(
+                    hintText: 'Enter Email',
+                    prefixIcon: Icon(
+                      Icons.mail,
+                      color: blueColor,
+                    ),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15))),
+                onChanged: (value) => email = value,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel")),
+                TextButton(
+                    onPressed: () async {
+                      if (email.isNotEmpty) {
+                        await API.addChatUser(email).then((value) {
+                          if (!value) {
+                            Dialogs.showSnackbar(
+                                context, "User does not Exist!");
+                          }
+                        });
+                      }
+
+                      Navigator.pop(context); // Close edit message dialog
+                    },
+                    child: const Text(
+                      "Add",
+                      style: TextStyle(color: blueColor),
+                    ))
+              ],
+            ));
   }
 }

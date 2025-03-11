@@ -249,7 +249,9 @@ class _MessageCardState extends State<MessageCard> {
                     size: 26,
                   ),
                   name: "Edit Message",
-                  onTap: () {},
+                  onTap: () {
+                    _showMessageEditDialog();
+                  },
                 ),
               if (isMe)
                 OptionItem(
@@ -290,6 +292,50 @@ class _MessageCardState extends State<MessageCard> {
             ],
           );
         });
+  }
+
+  void _showMessageEditDialog() {
+    String updatedMsg = widget.message.msg;
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              contentPadding:
+                  EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
+              title: Row(
+                children: [
+                  Icon(Icons.message, color: blueColor, size: 28),
+                  Text(" Edit Message")
+                ],
+              ),
+              content: TextFormField(
+                initialValue: updatedMsg,
+                autofocus: true,
+                maxLines: null,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15))),
+                onChanged: (value) => updatedMsg = value,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel")),
+                TextButton(
+                    onPressed: () async {
+                      await API.updateMessage(widget.message, updatedMsg);
+                      Navigator.pop(context); // Close edit message dialog
+                      Navigator.pop(context); // Close bottom sheet
+                    },
+                    child: const Text(
+                      "Update",
+                      style: TextStyle(color: blueColor),
+                    ))
+              ],
+            ));
   }
 }
 

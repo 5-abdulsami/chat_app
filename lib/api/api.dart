@@ -44,6 +44,31 @@ class API {
     return (await firestore.collection('users').doc(user.uid).get()).exists;
   }
 
+  static Future<bool> addChatUser(String email) async {
+    final data = await firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    log("data: ${data.docs}");
+
+    if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
+      // user exists
+
+      log("user exists: ${data.docs.first.id}");
+      firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('my_users')
+          .doc(data.docs.first.id)
+          .set({});
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   static Future<void> createUser() async {
     final time = DateTime.now().millisecondsSinceEpoch.toString();
     final chatUser = ChatUser(
@@ -138,7 +163,7 @@ class API {
     firestore
         .collection('chats/${getConversationId(message.fromId)}/messages/')
         .doc(message.sent) // as we stored the unique id as current time in sent
-        .update({'read': DateTime.now().microsecondsSinceEpoch.toString()});
+        .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
   }
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
@@ -221,6 +246,13 @@ class API {
     } catch (e) {
       log("\nsendPushNotification: $e");
     }
+  }
+
+  static Future<void> updateMessage(Message message, String updatedMsg) async {
+    await firestore
+        .collection('chats/${getConversationId(message.toId)}/messages/')
+        .doc(message.sent)
+        .update({'msg': updatedMsg});
   }
 
   static Future<void> saveImage(BuildContext context, String url) async {
