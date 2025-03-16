@@ -286,8 +286,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 bottom: mediaQuery.width * 0.025),
             onPressed: () {
               if (_messageController.text.isNotEmpty) {
-                API.sendMessage(
-                    widget.user, _messageController.text, Type.text);
+                if (_list.isEmpty) {
+                  API.sendFirstMessage(
+                      widget.user, _messageController.text, Type.text);
+                } else {
+                  API.sendMessage(
+                      widget.user, _messageController.text, Type.text);
+                }
                 _messageController.text = '';
               }
             },

@@ -104,11 +104,33 @@ class API {
     });
   }
 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
+      List<String> userIds) {
     return firestore
         .collection('users')
-        .where('id', isNotEqualTo: user.uid)
+        .where('id', whereIn: userIds)
+        // .where('id', isNotEqualTo: user.uid)
         .snapshots();
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMyUsersId() {
+    return firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('my_users')
+        .snapshots();
+  }
+
+  static Future<void> sendFirstMessage(
+      ChatUser chatUser, String msg, Type type) async {
+    await firestore
+        .collection("users")
+        .doc(chatUser.id)
+        .collection("my_users")
+        .doc(user.uid)
+        .set({}).then((value) {
+      sendMessage(chatUser, msg, type);
+    });
   }
 
   static Future<void> updateProfilePicture(File file) async {

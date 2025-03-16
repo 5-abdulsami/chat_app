@@ -116,8 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(width: mediaQuery.width * 0.02),
             ],
           ),
+          // get id of only known users
           body: StreamBuilder(
-              stream: API.getAllUsers(),
+              stream: API.getMyUsersId(),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -128,32 +129,50 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   case ConnectionState.active:
                   case ConnectionState.done:
-                    // fetching chat user (map) data from firestore and populating
-                    // the list with chat user objects
-                    final data = snapshot.data?.docs;
+                    return StreamBuilder(
+                        stream: API.getAllUsers(
+                            snapshot.data?.docs.map((e) => e.id).toList() ??
+                                []),
+                        // getting only those users whose ids are provided
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                            case ConnectionState.none:
+                            // return const Center(
+                            //   child: CircularProgressIndicator(),
+                            // );
 
-                    _list = data
-                            ?.map((e) => ChatUser.fromJson(e.data()))
-                            .toList() ??
-                        [];
+                            case ConnectionState.active:
+                            case ConnectionState.done:
+                              // fetching chat user (map) data from firestore and populating
+                              // the list with chat user objects
+                              final data = snapshot.data?.docs;
 
-                    if (_list.isNotEmpty) {
-                      return ListView.builder(
-                          padding:
-                              EdgeInsets.only(top: mediaQuery.height * 0.01),
-                          itemCount:
-                              _isSearching ? _searchList.length : _list.length,
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return ChatUserCard(
-                                user: _isSearching
-                                    ? _searchList[index]
-                                    : _list[index]);
-                          });
-                    } else {
-                      return Text("No connections found!",
-                          style: GoogleFonts.poppins());
-                    }
+                              _list = data
+                                      ?.map((e) => ChatUser.fromJson(e.data()))
+                                      .toList() ??
+                                  [];
+
+                              if (_list.isNotEmpty) {
+                                return ListView.builder(
+                                    padding: EdgeInsets.only(
+                                        top: mediaQuery.height * 0.01),
+                                    itemCount: _isSearching
+                                        ? _searchList.length
+                                        : _list.length,
+                                    physics: const BouncingScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return ChatUserCard(
+                                          user: _isSearching
+                                              ? _searchList[index]
+                                              : _list[index]);
+                                    });
+                              } else {
+                                return Text("No connections found!",
+                                    style: GoogleFonts.poppins());
+                              }
+                          }
+                        });
                 }
               }),
           floatingActionButton: Padding(
