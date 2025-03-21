@@ -139,54 +139,62 @@ class _ChatScreenState extends State<ChatScreen> {
             log("----------data stream : ${API.getUserInfo(widget.user)}");
             var list =
                 data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
-            return Row(
-              children: [
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                  ),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(mediaQuery.height * 0.03),
-                  child: CachedNetworkImage(
-                    height: mediaQuery.height * 0.06,
-                    width: mediaQuery.height * 0.06,
-                    imageUrl:
-                        list.isNotEmpty ? list[0].image : widget.user.image,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  ),
-                ),
-                SizedBox(
-                  width: mediaQuery.width * 0.02,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      list.isNotEmpty ? list[0].name : widget.user.name,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w500),
+            return Container(
+              decoration: const BoxDecoration(color: whiteColor),
+              padding: EdgeInsets.only(
+                top: mediaQuery.height * 0.035,
+                bottom: mediaQuery.height * 0.005,
+              ),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.black,
                     ),
-                    Text(
-                      list.isNotEmpty
-                          ? list[0].isOnline
-                              ? 'Online'
-                              : DateUtil.getLastActiveTime(
-                                  context: context, time: list[0].lastOnline)
-                          : DateUtil.getLastActiveTime(
-                              context: context, time: widget.user.lastOnline),
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w300),
+                  ),
+                  ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(mediaQuery.height * 0.03),
+                    child: CachedNetworkImage(
+                      height: mediaQuery.height * 0.06,
+                      width: mediaQuery.height * 0.06,
+                      imageUrl:
+                          list.isNotEmpty ? list[0].image : widget.user.image,
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
-                  ],
-                )
-              ],
+                  ),
+                  SizedBox(
+                    width: mediaQuery.width * 0.02,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        list.isNotEmpty ? list[0].name : widget.user.name,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      Text(
+                        list.isNotEmpty
+                            ? list[0].isOnline
+                                ? 'Online'
+                                : DateUtil.getLastActiveTime(
+                                    context: context, time: list[0].lastOnline)
+                            : DateUtil.getLastActiveTime(
+                                context: context, time: widget.user.lastOnline),
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.w300),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             );
           }),
     );
@@ -279,7 +287,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           MaterialButton(
-            minWidth: 40,
+            minWidth: 45,
             padding: EdgeInsets.only(
                 left: mediaQuery.width * 0.007,
                 top: mediaQuery.width * 0.025,
