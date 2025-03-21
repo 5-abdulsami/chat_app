@@ -194,6 +194,10 @@ class _MessageCardState extends State<MessageCard> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30), topRight: Radius.circular(30))),
         builder: (_) {
+          String messageTime = context.mounted
+              ? DateUtil.getMessageTime(
+                  context: context, time: widget.message.sent)
+              : "Unknown Time";
           return ListView(
             shrinkWrap: true,
             children: [
@@ -275,8 +279,7 @@ class _MessageCardState extends State<MessageCard> {
                   Icons.remove_red_eye,
                   color: blueColor,
                 ),
-                name:
-                    "Sent At : ${DateUtil.getMessageTime(context: context, time: widget.message.sent)}",
+                name: "Sent At : $messageTime",
                 onTap: () {},
               ),
               OptionItem(
@@ -297,45 +300,52 @@ class _MessageCardState extends State<MessageCard> {
   void _showMessageEditDialog() {
     String updatedMsg = widget.message.msg;
     showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              contentPadding:
-                  EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
-              title: Row(
-                children: [
-                  Icon(Icons.message, color: blueColor, size: 28),
-                  Text(" Edit Message")
-                ],
-              ),
-              content: TextFormField(
-                initialValue: updatedMsg,
-                autofocus: true,
-                maxLines: null,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15))),
-                onChanged: (value) => updatedMsg = value,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Cancel")),
-                TextButton(
-                    onPressed: () async {
-                      await API.updateMessage(widget.message, updatedMsg);
-                      Navigator.pop(context); // Close edit message dialog
-                      Navigator.pop(context); // Close bottom sheet
-                    },
-                    child: const Text(
-                      "Update",
-                      style: TextStyle(color: blueColor),
-                    ))
-              ],
-            ));
+      context: context,
+      builder: (dialogContext) => WillPopScope(
+        onWillPop: () async {
+          Navigator.pop(dialogContext); // Close the dialog safely
+          return false; // Prevent default back button behavior
+        },
+        child: AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          contentPadding:
+              const EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
+          title: const Row(
+            children: [
+              Icon(Icons.message, color: blueColor, size: 28),
+              Text(" Edit Message")
+            ],
+          ),
+          content: TextFormField(
+            initialValue: updatedMsg,
+            autofocus: true,
+            maxLines: null,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15))),
+            onChanged: (value) => updatedMsg = value,
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(dialogContext);
+                },
+                child: const Text("Cancel")),
+            TextButton(
+                onPressed: () async {
+                  await API.updateMessage(widget.message, updatedMsg);
+                  Navigator.pop(dialogContext); // Close edit message dialog
+                  Navigator.pop(context); // Close bottom sheet
+                },
+                child: const Text(
+                  "Update",
+                  style: TextStyle(color: blueColor),
+                ))
+          ],
+        ),
+      ),
+    );
   }
 }
 
