@@ -51,16 +51,16 @@ class _HomeScreenState extends State<HomeScreen> {
     var mediaQuery = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: PopScope(
-        onPopInvokedWithResult: (didPop, result) {
+      child: WillPopScope(
+        onWillPop: () async {
           if (_isSearching) {
             setState(() {
               _isSearching = false;
               _searchList.clear();
             });
-          } else {
-            Navigator.of(context).pop();
+            return false; // Prevent app from closing
           }
+          return true; // Allow default back button behavior
         },
         child: Scaffold(
           appBar: AppBar(
