@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -106,6 +107,11 @@ class API {
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
       List<String> userIds) {
+    if (userIds.isEmpty) {
+      // Return an empty stream instead of making an invalid Firestore query
+      return const Stream.empty();
+    }
+
     return firestore
         .collection('users')
         .where('id', whereIn: userIds)
@@ -224,7 +230,7 @@ class API {
   static Future<void> updateActiveStatus({required bool isOnline}) async {
     firestore.collection('users').doc(user.uid).update({
       'isOnline': isOnline,
-      'lastOnline ': DateTime.now().millisecondsSinceEpoch.toString(),
+      'lastOnline': DateTime.now().millisecondsSinceEpoch.toString(),
       'pushToken': currentUser.pushToken
     });
   }

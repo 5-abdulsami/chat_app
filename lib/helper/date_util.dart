@@ -14,6 +14,8 @@ class DateUtil {
     final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     final DateTime now = DateTime.now();
 
+    if (!context.mounted) return "Unknown Time"; // Ensure context is valid
+
     final formattedTime = TimeOfDay.fromDateTime(sent).format(context);
     if (now.day == sent.day &&
         now.month == sent.month &&
@@ -26,10 +28,11 @@ class DateUtil {
         : '$formattedTime - ${sent.day} ${_getMonthName(sent.month)} ${sent.year}';
   }
 
-  static String getLastMessageTime(
-      {required BuildContext context,
-      required String time,
-      bool showYear = false}) {
+  static String getLastMessageTime({
+    required BuildContext context,
+    required String time,
+    bool showYear = false,
+  }) {
     final DateTime sentTime =
         DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     final DateTime now = DateTime.now();
@@ -37,7 +40,13 @@ class DateUtil {
     if (now.day == sentTime.day &&
         now.month == sentTime.month &&
         now.year == sentTime.year) {
-      return TimeOfDay.fromDateTime(sentTime).format(context);
+      // Format manually to always show AM/PM
+      final int hour = sentTime.hour;
+      final int minute = sentTime.minute;
+      final String period = hour >= 12 ? 'PM' : 'AM';
+      final int formattedHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+
+      return '$formattedHour:${minute.toString().padLeft(2, '0')} $period';
     }
 
     return showYear
