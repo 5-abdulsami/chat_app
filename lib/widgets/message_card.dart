@@ -188,116 +188,119 @@ class _MessageCardState extends State<MessageCard> {
 
   _showBottomSheet(BuildContext context, bool isMe) {
     final mediaQuery = MediaQuery.of(context).size;
-    showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30), topRight: Radius.circular(30))),
-        builder: (_) {
-          String messageTime = context.mounted
-              ? DateUtil.getMessageTime(
-                  context: context, time: widget.message.sent)
-              : "Unknown Time";
-          return ListView(
-            shrinkWrap: true,
-            children: [
-              Container(
-                height: 4,
-                margin: EdgeInsets.symmetric(
-                    horizontal: mediaQuery.width * 0.4,
-                    vertical: mediaQuery.height * 0.015),
-                decoration: BoxDecoration(
-                    color: greyColor, borderRadius: BorderRadius.circular(8)),
-              ),
-              widget.message.type == Type.text
-                  ? OptionItem(
-                      icon: const Icon(
-                        Icons.copy,
-                        color: blueColor,
-                        size: 26,
-                      ),
-                      name: "Copy Text",
-                      onTap: () async {
-                        await Clipboard.setData(
-                                ClipboardData(text: widget.message.msg))
-                            .then((value) {
-                          Navigator.pop(context);
-                          Dialogs.showSnackbar(context, "Text Copied");
-                        });
-                      },
-                    )
-                  : OptionItem(
-                      icon: const Icon(
-                        Icons.download,
-                        color: blueColor,
-                        size: 26,
-                      ),
-                      name: "Save Image",
-                      onTap: () async {
-                        await API.saveImage(context, widget.message.msg);
 
-                        Navigator.pop(context);
-                      },
+    // Store the message time before opening the bottom sheet
+    String messageTime =
+        DateUtil.getMessageTime(context: context, time: widget.message.sent);
+
+    if (!mounted) return; // Prevent calling setState if widget is disposed
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+      builder: (_) {
+        return ListView(
+          shrinkWrap: true,
+          children: [
+            Container(
+              height: 4,
+              margin: EdgeInsets.symmetric(
+                  horizontal: mediaQuery.width * 0.4,
+                  vertical: mediaQuery.height * 0.015),
+              decoration: BoxDecoration(
+                  color: greyColor, borderRadius: BorderRadius.circular(8)),
+            ),
+            widget.message.type == Type.text
+                ? OptionItem(
+                    icon: const Icon(
+                      Icons.copy,
+                      color: blueColor,
+                      size: 26,
                     ),
-              if (isMe)
-                Divider(
-                  color: Colors.black54,
-                  endIndent: mediaQuery.width * 0.04,
-                  indent: mediaQuery.width * 0.04,
-                ),
-              if (widget.message.type == Type.text && isMe)
-                OptionItem(
-                  icon: const Icon(
-                    Icons.edit,
-                    color: blueColor,
-                    size: 26,
+                    name: "Copy Text",
+                    onTap: () async {
+                      await Clipboard.setData(
+                              ClipboardData(text: widget.message.msg))
+                          .then((value) {
+                        Navigator.pop(context);
+                        Dialogs.showSnackbar(context, "Text Copied");
+                      });
+                    },
+                  )
+                : OptionItem(
+                    icon: const Icon(
+                      Icons.download,
+                      color: blueColor,
+                      size: 26,
+                    ),
+                    name: "Save Image",
+                    onTap: () async {
+                      await API.saveImage(context, widget.message.msg);
+                      Navigator.pop(context);
+                    },
                   ),
-                  name: "Edit Message",
-                  onTap: () {
-                    _showMessageEditDialog();
-                  },
-                ),
-              if (isMe)
-                OptionItem(
-                  icon: const Icon(
-                    Icons.delete,
-                    color: blueColor,
-                    size: 26,
-                  ),
-                  name: "Delete Message",
-                  onTap: () {
-                    API.deleteMessage(widget.message);
-                  },
-                ),
+            if (isMe)
               Divider(
                 color: Colors.black54,
                 endIndent: mediaQuery.width * 0.04,
                 indent: mediaQuery.width * 0.04,
               ),
+            if (widget.message.type == Type.text && isMe)
               OptionItem(
                 icon: const Icon(
-                  Icons.remove_red_eye,
+                  Icons.edit,
                   color: blueColor,
+                  size: 26,
                 ),
-                name: "Sent At : $messageTime",
-                onTap: () {},
+                name: "Edit Message",
+                onTap: () {
+                  _showMessageEditDialog(context);
+                },
               ),
+            if (isMe)
               OptionItem(
                 icon: const Icon(
-                  Icons.remove_red_eye,
-                  color: greenColor,
+                  Icons.delete,
+                  color: blueColor,
+                  size: 26,
                 ),
-                name: widget.message.read.isEmpty
-                    ? "Read At: Not seen yet"
-                    : "Read At : ${DateUtil.getMessageTime(context: context, time: widget.message.read)}",
-                onTap: () {},
+                name: "Delete Message",
+                onTap: () {
+                  API.deleteMessage(widget.message);
+                },
               ),
-            ],
-          );
-        });
+            Divider(
+              color: Colors.black54,
+              endIndent: mediaQuery.width * 0.04,
+              indent: mediaQuery.width * 0.04,
+            ),
+            OptionItem(
+              icon: const Icon(
+                Icons.remove_red_eye,
+                color: blueColor,
+              ),
+              name: "Sent At : $messageTime", // Use pre-fetched time
+              onTap: () {},
+            ),
+            OptionItem(
+              icon: const Icon(
+                Icons.remove_red_eye,
+                color: greenColor,
+              ),
+              name: widget.message.read.isEmpty
+                  ? "Read At: Not seen yet"
+                  : "Read At : ${DateUtil.getMessageTime(context: context, time: widget.message.read)}",
+              onTap: () {},
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  void _showMessageEditDialog() {
+  void _showMessageEditDialog(BuildContext context) {
     String updatedMsg = widget.message.msg;
     showDialog(
       context: context,
@@ -336,7 +339,6 @@ class _MessageCardState extends State<MessageCard> {
                 onPressed: () async {
                   await API.updateMessage(widget.message, updatedMsg);
                   Navigator.pop(dialogContext); // Close edit message dialog
-                  Navigator.pop(context); // Close bottom sheet
                 },
                 child: const Text(
                   "Update",

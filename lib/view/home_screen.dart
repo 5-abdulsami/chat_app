@@ -168,8 +168,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                               : _list[index]);
                                     });
                               } else {
-                                return Text("No connections found!",
-                                    style: GoogleFonts.poppins());
+                                return Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.person_off_outlined,
+                                        size: 50,
+                                      ),
+                                      Text("No connections found!",
+                                          style: GoogleFonts.poppins()),
+                                    ],
+                                  ),
+                                );
                               }
                           }
                         });
@@ -196,9 +207,9 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (_) => AlertDialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
-              contentPadding:
-                  EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
-              title: Row(
+              contentPadding: const EdgeInsets.only(
+                  left: 24, right: 24, top: 20, bottom: 10),
+              title: const Row(
                 children: [
                   Icon(Icons.person, color: blueColor, size: 28),
                   Text("  Add User")
@@ -209,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 maxLines: null,
                 decoration: InputDecoration(
                     hintText: 'Enter Email',
-                    prefixIcon: Icon(
+                    prefixIcon: const Icon(
                       Icons.mail,
                       color: blueColor,
                     ),
